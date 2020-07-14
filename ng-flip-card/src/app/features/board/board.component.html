@@ -1,0 +1,9 @@
+<div *ngIf="gameInProgress">
+    <br>
+    <mat-progress-bar mode="determinate" [value]="progressValue" color="warn"></mat-progress-bar>
+    <br>
+    <fc-card-list [cardsList]="cardsList$ | async" (cardToHide)="reassignCardList($event)"></fc-card-list>
+</div>
+<div *ngIf="!gameInProgress" [@fadeInOut] fxLayout="column wrap" fxLayoutAlign="center center">
+    <fc-retry [isUserWinner]="userWins"></fc-retry>
+</div>

@@ -1,0 +1,51 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "module": "esnext",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "esnext",
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+        "paths": {
+          "@enviroments/*": [
+            "src/environments/*"
+          ],
+          "@app/*": [
+            "src/app/*"
+          ],
+          "@app/assets/*": [
+            "src/assets/*"
+          ],
+          "@app/features/*": [
+            "src/app/features/*"
+          ],
+          "@app/mockdata/*": [
+            "src/mockdata/*"
+          ],
+          "@app/shared/*": [
+            "src/app/shared/*"
+          ],
+          "core-js/es7/reflect": [
+            "node_modules/core-js/proposals/reflect-metadata"
+          ],
+          "core-js/es6/*": [
+            "node_modules/core-js/es"
+          ]
+        }
+  },
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true
+  }
+}

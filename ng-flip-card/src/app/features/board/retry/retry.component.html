@@ -1,0 +1,10 @@
+<div fxLayout="column wrap" fxLayoutAlign="center center">
+    <section class="h4">
+        <span>{{isUserWinner ? 'You won!' : 'You failed, too bad!'}}</span>
+    </section>
+    <section fxLayout="column nowrap" fxLayoutAlign="center center">
+        <div class="h5">{{isUserWinner ? 'Want to do it better?' : 'Want a second chance?'}} </div>
+        <br>
+        <button mat-raised-button class="p large" color="accent" routerLink="/instructions">{{isUserWinner ? 'Again' : 'Retry'}}</button>
+    </section>
+</div>

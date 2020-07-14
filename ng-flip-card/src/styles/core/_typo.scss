@@ -1,0 +1,86 @@
+@import 'variables';
+
+html,
+body {
+  font: 14px/22px Open Sans Regular, sans-serif;
+  color: $fc-dark-text;
+}
+
+h1,
+.h1 {
+  font: 96px/112px Open Sans Regular, sans-serif;
+  color: $fc-light-text;
+}
+
+h2,
+.h2 {
+  font: 60px/72px Open Sans Regular, sans-serif;
+  color: $fc-light-text;
+}
+
+h3,
+.h3 {
+  font: 48px/70px Open Sans Regular, sans-serif;
+  color: $fc-light-text;
+}
+
+h4,
+.h4 {
+  font: 34px/44px Open Sans Regular, sans-serif;
+  color: $fc-light-text;
+}
+
+h5,
+.h5 {
+  font: 24px/40px Open Sans Regular, sans-serif;
+  color: $fc-light-text;
+}
+
+h6,
+.h6 {
+  font: 20px/28px Open Sans Regular, sans-serif;
+  color: $fc-light-text;
+}
+
+b,
+strong {
+  font-weight: bold;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+  color: $fc-light-text;
+  font-weight: bolder;
+}
+
+a {
+  font: 16px/24px Open Sans Regular, sans-serif;
+  color: $fc-dark-text;
+}
+
+p,
+.p {
+    font: 14px/22px Open Sans Regular, sans-serif;
+    color: $fc-dark-text;
+
+  &.large {
+    font: 16px/24px Open Sans Regular, sans-serif;
+    color: $fc-dark-text;
+  }
+
+  &.small {
+    font: 12px/18px Open Sans Regular, sans-serif;
+    color: $fc-dark-text;
+  }
+
+}

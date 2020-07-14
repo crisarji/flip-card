@@ -1,0 +1,17 @@
+[
+    {
+        "id": "easy",
+        "name": "Easy",
+        "color": "primary"
+    },
+    {
+        "id": "medium",
+        "name": "Medium",
+        "color": "accent"
+    },
+    {
+        "id": "hard",
+        "name": "Hard",
+        "color": "warn"
+    }
+]

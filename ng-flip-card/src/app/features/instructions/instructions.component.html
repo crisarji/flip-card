@@ -1,0 +1,24 @@
+<div fxLayout="column nowrap" fxLayoutAlign="center center" class="section-container">
+    <section class="h4">
+        <span>Please pick one of the levels and click start!</span>
+    </section>
+
+    <section fxLayout="row nowrap" fxLayoutAlign="space-between center">
+        <div>
+            <div class="h5">Level</div>
+            <mat-radio-group (change)="changeLevel($event)">
+                <mat-radio-button *ngFor="let level of gameLevels" 
+                    class="item-margin p large" [value]="level.id" [color]="level.color">
+                    {{level.name}}
+                </mat-radio-button>
+            </mat-radio-group>
+        </div>
+        <div>
+            <button mat-raised-button class="p large" [color]="levelColor" [disabled]="!timeInSeconds" (click)="invokeKickOff()">Start</button>
+        </div>
+    </section>
+
+    <section>
+        <div [hidden]="!timeInSeconds" class="p large">You have <b>{{timeInSeconds}}</b> seconds to find all the matches!</div>
+    </section>        
+</div>

@@ -1,0 +1,9 @@
+<mat-card fxLayoutAlign="center center"
+    [ngClass]="{'item-visible': card.visible, 'item-invisible': !card.visible}">
+    <mat-card-content class="item-container" (click)="toggleFlip()" [@flipState]="flip" [hidden]="!card.visible">
+        <div class="item-container__side item-container__front" (click)="invokeCardToHide()"></div>
+        <div class="item-container__side item-container__back">
+            <mat-icon class="icon-size">{{card.name}}</mat-icon>
+        </div>
+    </mat-card-content>
+</mat-card>

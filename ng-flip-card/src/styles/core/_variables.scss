@@ -1,0 +1,26 @@
+// ===============================
+// Variables
+// ===============================
+// Tips:
+// * In case you don't have names defined for your variables for your color, this tool can help you http://chir.ag/projects/name-that-color/
+// * Define a prefix for your variables
+// * HEX values should be lowercase
+// * Set fallbacks to your font variables
+// References:
+// * http://thesassway.com/beginner/variable-naming
+// * http://chir.ag/projects/name-that-color/
+
+$prefix: 'fc';
+
+// ===============================
+// Ng Material Components Colors
+// ===============================
+$fc-light-text: #FFFFFF;
+$fc-dark-text: #3f51b5;
+
+// ===============================
+// Font Variables
+// ===============================
+$font-url: 'assets/fonts/';
+$font-regular: Open Sans Regular,
+sans-serif;

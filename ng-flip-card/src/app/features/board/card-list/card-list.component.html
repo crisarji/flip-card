@@ -1,0 +1,5 @@
+<div fxLayout="row wrap" fxLayoutAlign="center">
+    <fc-card *ngFor="let card of cardsList; let length = count;" 
+        fxFlex="0 1 {{100/(length/2)}}%" fxFlex.lt-sm="0 1 {{90/(length/2)}}%"
+        [card]="card" (cardToHide)="cardHide($event)"></fc-card>
+</div>
