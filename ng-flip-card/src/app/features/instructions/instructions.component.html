@@ -1,24 +1,46 @@
-<div fxLayout="column nowrap" fxLayoutAlign="center center" class="section-container">
-    <section class="h4">
-        <span>Please pick one of the levels and click start!</span>
-    </section>
-
-    <section fxLayout="row nowrap" fxLayoutAlign="space-between center">
-        <div>
-            <div class="h5">Level</div>
-            <mat-radio-group (change)="changeLevel($event)">
-                <mat-radio-button *ngFor="let level of gameLevels" 
-                    class="item-margin p large" [value]="level.id" [color]="level.color">
-                    {{level.name}}
-                </mat-radio-button>
-            </mat-radio-group>
-        </div>
-        <div>
-            <button mat-raised-button class="p large" [color]="levelColor" [disabled]="!timeInSeconds" (click)="invokeKickOff()">Start</button>
-        </div>
-    </section>
-
-    <section>
-        <div [hidden]="!timeInSeconds" class="p large">You have <b>{{timeInSeconds}}</b> seconds to find all the matches!</div>
-    </section>        
+<div class="layout-container" [class.example-is-mobile]="mobileQuery.matches" fxLayout="row" fxLayoutAlign="center">
+    <mat-sidenav-container [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
+        <mat-sidenav #sidenav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches"
+            fixedTopGap="56" class="layout-sidenav sidenav">
+            <fc-scores [scores]="scores$ | async" [levelName]="levelName"></fc-scores>
+        </mat-sidenav>
+        <mat-sidenav-content>
+            <button mat-button class="menu-button" (click)="sidenav.toggle() && toggleMenu()" color="primary">
+                <mat-icon>{{ isMenuOpen ? 'menu_open' : 'menu' }}</mat-icon> Top 5
+            </button>
+            <div *ngIf="(gameLevels$ | async)?.length > 0; else showSpinner">
+                <div fxLayout="column nowrap" fxLayoutAlign="center center" class="section-container">
+                    <section class="h4 text-primary">
+                        <span>Please pick one of the levels and click start!</span>
+                    </section>
+                    <section fxLayout="row nowrap" fxLayoutAlign="space-between center">
+                        <div>
+                            <div class="h5 text-primary">Level</div>
+                            <mat-radio-group (change)="changeLevel($event)">
+                                <mat-radio-button *ngFor="let level of gameLevels$ | async" class="item-margin p large"
+                                    [value]="level.id" [color]="level.color" (change)="changeTime(level.time)">
+                                    {{level.name}}
+                                </mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                        <div>
+                            <button mat-raised-button class="p large" [color]="levelColor" [disabled]="!timeInSeconds"
+                                (click)="invokeKickOff()">Start</button>
+                        </div>
+                    </section>
+                    <section>
+                        <div [hidden]="!timeInSeconds" class="p large">You have <b>{{timeInSeconds}}</b> seconds to find
+                            all
+                            the
+                            matches!</div>
+                    </section>
+                </div>
+            </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
 </div>
+<ng-template #showSpinner>
+    <div class="loading-indicator">
+        <mat-progress-spinner [color]="'accent'" [mode]="'indeterminate'" [value]="50"> </mat-progress-spinner>
+    </div>
+</ng-template>

@@ -1,0 +1,15 @@
+<h4>Highest Scores</h4>
+<h4>Level: 
+    <span [style.color]="levelName === 'easy' ? 
+        '#3f51b5' : levelName === 'medium' ? 
+        '#ff4081' : '#f44336'">{{levelName | uppercase}}</span>
+</h4>
+<mat-list fxLayout="column wrap">
+    <mat-list-item *ngFor="let score of scores; let i = index" fxLayoutAlign="space-between center">
+        <a mat-button><strong>{{score.nickName | uppercase | slice:0:8}} => {{(score.endTimeStamp - score.startTimeStamp) / 1000}} seconds!</strong></a>
+        <button mat-icon-button [style.color]="i == 0 ? '#FFD700' : i == 1 ? 'silver' : '#b87333'">
+            <mat-icon>stars</mat-icon>
+        </button>
+        <mat-divider></mat-divider>
+    </mat-list-item>
+</mat-list>

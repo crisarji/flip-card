@@ -12,4 +12,4 @@ import { FooterModule } from '@app/features/core/layout/footer/footer.module';
   declarations: [LayoutComponent],
   exports: [LayoutComponent],
 })
-export class LayoutModule { }
+export class LayoutModule {}

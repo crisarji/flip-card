@@ -1,7 +1,7 @@
-<fc-header></fc-header>
-<mat-drawer-container class="layout-container" autosize>
-  <div class="layout-sidenav-content">
-    <router-outlet></router-outlet>
+<fc-header [user]="user$ | async" (signOut)="logOut()"></fc-header>
+  <div class="layout-container" autosize>
+    <div class="layout-sidenav-content">
+      <ng-content></ng-content>
+    </div>
   </div>
-</mat-drawer-container>
 <fc-footer></fc-footer>

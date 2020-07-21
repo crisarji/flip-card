@@ -1,0 +1,4 @@
+<fc-login-form *ngIf="currentView == DisplayView.Login" (loginSubmit)="login($event)"
+    (changeToRegister)="changeToRegister()"></fc-login-form>
+<fc-register-form *ngIf="currentView == DisplayView.Register" (registerSubmit)="register($event)"
+    (cancelRegister)="changeToLogin()"></fc-register-form>

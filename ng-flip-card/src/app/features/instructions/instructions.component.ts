@@ -1,31 +1,72 @@
+import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
-import { Component } from '@angular/core';
+import { Store, select } from '@ngrx/store';
+import { MediaMatcher } from '@angular/cdk/layout';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 
 import { MatRadioChange } from '@app/shared/shared.module';
-import gameLevels from '@app/mockdata/json/game-levels.json';
 import { Level } from '@app/features/core/models/level.model';
-import { GameService } from '@app/features/services/game.service';
+import { Score } from '@app/features/core/models/score.model';
+import { ApplicationState } from '@app/features/global-state/app.state';
+import { ScoresSelectors, ScoresActions } from '@app/features/scores/state';
+import { InstructionsActions, InstructionsSelectors } from '@app/features/instructions/state';
 
 @Component({
   selector: 'fc-instructions',
   templateUrl: './instructions.component.html',
-  styleUrls: ['./instructions.component.scss']
+  styleUrls: ['./instructions.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InstructionsComponent {
-  public timeInSeconds = null;
-  public gameLevel = null;
+export class InstructionsComponent implements OnInit {
+  public levelName = 'easy';
   public levelColor = null;
-  public gameLevels: Level[] = [...gameLevels];
+  public timeInSeconds = null;
+  public isMenuOpen: boolean = false;
 
-  constructor(private router: Router, private gameService: GameService) { }
+  public scores$: Observable<Score[] | null>;
+  public gameLevels$: Observable<Level[] | null>;
 
-  public changeLevel(selected: MatRadioChange): void {
-    this.gameLevel = selected.value;
-    this.levelColor = selected.source.color;
+  public mobileQuery: MediaQueryList;
 
-    const { time } = this.gameService.getLevelTimeInSeconds(selected.value);
-    this.timeInSeconds = time;
+  constructor(
+    private applicationState: Store<ApplicationState>,
+    private router: Router,
+    private changeDetectorRef: ChangeDetectorRef,
+    private media: MediaMatcher
+  ) {
+    this.initializeMobileBehavior();
   }
 
-  public invokeKickOff = () => this.router.navigate(['/board'], { queryParams: { gameLevel: this.gameLevel } });
+  public ngOnInit(): void {
+    this.applicationState.dispatch(InstructionsActions.loadLevels());
+    this.applicationState.dispatch(ScoresActions.loadScores());
+
+    this.gameLevels$ = this.applicationState.pipe(select(InstructionsSelectors.selectAllLevels));
+    this.scores$ = this.applicationState.pipe(select(ScoresSelectors.getTop5, { levelId: this.levelName }));
+  }
+
+  public ngOnDestroy(): void {
+    this.mobileQuery.removeListener(this.mobileQueryListener);
+  }
+
+  public changeLevel(selected: MatRadioChange): void {
+    this.applicationState.dispatch(InstructionsActions.selectedLevel({ levelId: selected.value }));
+    this.scores$ = this.applicationState.pipe(select(ScoresSelectors.getTop5, { levelId: selected.value }));
+    this.levelName = selected.value;
+    this.levelColor = selected.source.color;
+  }
+
+  private initializeMobileBehavior() {
+    this.mobileQuery = this.media.matchMedia('(max-width: 600px)');
+    this.mobileQueryListener = () => this.changeDetectorRef.detectChanges();
+    this.mobileQuery.addListener(this.mobileQueryListener);
+  }
+
+  private mobileQueryListener: () => void;
+
+  public changeTime = (time: number) => (this.timeInSeconds = time);
+
+  public invokeKickOff = () => this.router.navigate(['/board']);
+
+  public toggleMenu = () => (this.isMenuOpen = !this.isMenuOpen);
 }

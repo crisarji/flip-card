@@ -2,6 +2,9 @@
     <section class="h4">
         <span>{{isUserWinner ? 'You won!' : 'You failed, too bad!'}}</span>
     </section>
+    <section *ngIf="isUserWinner" class="h4">
+        <span>It took you {{timeElapsed}} seconds!</span>
+    </section>
     <section fxLayout="column nowrap" fxLayoutAlign="center center">
         <div class="h5">{{isUserWinner ? 'Want to do it better?' : 'Want a second chance?'}} </div>
         <br>

@@ -1,11 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'reset';
 @import 'styles/theme';
+@import 'styles/common/loading-indicator';
+@import 'styles/common/notification-colors';
 
-html, body { height: 93%; }
-body { margin: 0; font-family: Open Sans Regular, sans-serif; }
-
-
+html, body { height: 93%; margin: 0; padding: 0;}
+body { margin: 0; font-family: Open Sans Regular, sans-serif; background-color: #fafafa;}
 
 section {
   margin: 5% 0;
@@ -19,12 +19,11 @@ button {
  }
 }
 
-@media screen and (max-width: 768px) {
-  button {
-    height: 4em;
-    width: 5em;
-    &.p.large {
-      color: white;
-    }
-  }
+[hidden] {
+  color: transparent;
+}
+
+.disable-click {
+  pointer-events: none;
+  cursor: default;
 }

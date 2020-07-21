@@ -4,12 +4,21 @@ import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { SharedModule } from '@app/shared/shared.module';
+import { ScoresModule } from '@app/features/scores/scores.module';
+import { InstructionsStoreModule } from '@app/features/instructions/state';
 import { InstructionsComponent } from '@app/features/instructions/instructions.component';
 import { InstructionsRoutingModule } from '@app/features/instructions/instructions-routing.module';
 
-
 const modules = [
-  CommonModule, FormsModule, ReactiveFormsModule, SharedModule, RouterModule, InstructionsRoutingModule];
+  CommonModule,
+  FormsModule,
+  ReactiveFormsModule,
+  InstructionsStoreModule,
+  SharedModule,
+  RouterModule,
+  InstructionsRoutingModule,
+  ScoresModule,
+];
 
 @NgModule({
   imports: [...modules],

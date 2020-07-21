@@ -1,92 +1,95 @@
-import { map, takeUntil, tap } from 'rxjs/operators';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subscription, timer, Subject } from 'rxjs';
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, AfterContentChecked } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
+import { Store, select } from '@ngrx/store';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectorRef,
+  AfterContentChecked,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 import { Card } from '@app/features/core/models/card.model';
-import { GameService } from '@app/features/services/game.service';
-import { GameLevel } from '@app/features/core/enums/game-levels.enum';
-import { ShuffleService } from '@app/features/services/shuffle.service';
+import { Level } from '@app/features/core/models/level.model';
+import { ApplicationState } from '@app/features/global-state/app.state';
+import { BoardActions, BoardSelectors } from '@app/features/board/state';
+import { BoardService } from '@app/features/board/services/board.service';
 import { fadeInOutAnimation } from '@app/features/core/animations/ng-animations';
+import { SubscriptionService } from '@app/features/core/firebase/services/subscription.service';
 
 @Component({
   selector: 'fc-board',
   templateUrl: './board.component.html',
-  styleUrls: ['./board.component.scss'],
-  animations: [...fadeInOutAnimation]
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [...fadeInOutAnimation],
 })
 export class BoardComponent implements OnInit, OnDestroy, AfterContentChecked {
-  private queueOfOne = [];
-  private timerSubscription: Subscription;
-  private unsubscribeTimer = new Subject();
-  private unsubscribeShuffle = new Subject();
-
-  public gameInProgress = true;
+  public timeElapsed = 0;
+  public progressBar = 0;
   public userWins = false;
-  public progressValue = 0;
-  public cardsList$: Observable<any>;
+  public gameInProgress = true;
+  public flipsCounter = 0;
+  public disableBoard = false;
 
-  constructor(private route: ActivatedRoute, private router: Router,
-    private gameService: GameService, private changeDetector: ChangeDetectorRef,
-    private shuffleService: ShuffleService) { }
+  public deck$: Observable<Card[] | null>;
+
+  constructor(
+    private router: Router,
+    private boardService: BoardService,
+    private changeDetector: ChangeDetectorRef,
+    private subscriptionService: SubscriptionService,
+    private applicationState: Store<ApplicationState>
+  ) {}
 
   public ngOnInit(): void {
-    this.route
-      .queryParams
-      .subscribe(params => {
-        const gameLevel = params['gameLevel'] || GameLevel.Easy;
-        this.setLevelFeatures(gameLevel);
-      });
-    this.cardsList$ = this.shuffleService.getShuffleDeck().pipe(takeUntil(this.unsubscribeShuffle));
+    this.applicationState.dispatch(BoardActions.loadCards());
+    this.applicationState
+      .pipe(select(BoardSelectors.getLevelSelected))
+      .subscribe(level => this.setLevelFeatures(level));
+    this.boardService.timeElapsed.subscribe(totalTime => (this.timeElapsed = totalTime) && this.gameOver(true));
   }
 
   public ngOnDestroy(): void {
-    this.timerSubscription.unsubscribe();
-    this.unsubscribeShuffle.next(true);
-    this.unsubscribeShuffle.complete();
+    this.subscriptionService.releaseComponent.next();
   }
 
   public ngAfterContentChecked(): void {
     this.changeDetector.detectChanges();
   }
 
-  private setLevelFeatures(gameLevel: GameLevel): void {
-    const { time, cardsTotal } = this.gameService.getLevelTimeInSeconds(gameLevel)
-
-    this.shuffleService.setShuffleDeck(cardsTotal);
-    this.timerSubscription = timer(100, time * 10).pipe(takeUntil(this.unsubscribeTimer)).subscribe(timing => this.tickerCheck(timing));
+  private setLevelFeatures(level: Level): void {
+    this.deck$ = this.applicationState.pipe(select(BoardSelectors.shuffleDeck, { size: level.size }));
+    this.boardService.startTimer(level).subscribe(ticksElapsed => this.tickerCheck(ticksElapsed));
   }
 
   private tickerCheck(ticksElapsed: number): void {
-    this.progressValue = ticksElapsed;
+    this.progressBar = ticksElapsed;
     ticksElapsed === 100 && this.gameOver(false);
   }
 
   public gameOver(isWinner: boolean = false): void {
     this.gameInProgress = false;
     isWinner && (this.userWins = true);
-
-    this.unsubscribeTimer.next();
     this.router.navigate([], { replaceUrl: true });
   }
 
-  public reassignCardList(card: Card): void {
+  public filterDeck(card: Card): void {
+    this.applyDelay();
     setTimeout(() => {
-      const queuedItem = this.queueOfOne.length ? this.queueOfOne[0] : null;
-      if (queuedItem &&
-        queuedItem.name === card.name &&
-        queuedItem.position !== card.position) {
-        this.cardsList$ = this.cardsList$.pipe(
-          map((items: Card[]) => items.map(item => item.name === card.name ? { ...item, visible: false } : item)),
-          tap((items: Card[]) => (items.every(item => !item.visible) && this.gameOver(true))),
-          tap(_ => this.queueOfOne.shift())
-        );
-      } else {
-        this.queueOfOne.shift();
-        this.queueOfOne.push(card);
-      }
+      this.deck$ = this.boardService.filterDeck(this.deck$, card);
     }, 1200);
   }
+
+  private applyDelay() {
+    this.flipsCounter++;
+    if (this.flipsCounter === 2) {
+      this.disableBoard = true;
+      this.boardService.resetSelectedCard();
+      setTimeout(() => {
+        this.disableBoard = false;
+        this.flipsCounter = 0;
+      }, 1000);
+    }
+  }
 }
-
-

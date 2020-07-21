@@ -2,18 +2,14 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { MaterialModule } from '@app/shared/material/material.module';
-import { CountdownDirective } from '@app/shared/directives/countdown.directive';
+import { ControlsModule } from '@app/shared/controls/controls.module';
 
 export * from '@app/shared/material/material.module';
 
-const modules = [CommonModule, MaterialModule];
-const directives = [CountdownDirective];
+const modules = [CommonModule, ControlsModule, MaterialModule];
 
 @NgModule({
   imports: [...modules],
-  exports: [...modules, ...directives],
-  declarations: [...directives],
-
-  providers: [],
+  exports: [...modules],
 })
 export class SharedModule {}
